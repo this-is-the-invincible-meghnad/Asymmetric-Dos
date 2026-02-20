@@ -1,21 +1,24 @@
-# Asymmetric Resource Exhaustion Simulator
+# AsyncIO Asymmetric Stress Tester
 
 ## Overview
-This tool demonstrates the mechanics of a Denial-of-Service (DoS) attack targeting web server connection pools. Instead of utilizing high-bandwidth volumetric flooding, it exploits how servers handle concurrent TCP connections.
+An enterprise-grade Denial-of-Service simulator built to research web server resource exhaustion. This engine utilizes asynchronous I/O to launch hundreds of concurrent connections on a single thread. It includes a built-in vulnerable testing server to demonstrate the attack lifecycle safely.
 
 ## Mechanism
-The engine opens a set number of connections to the target server and sends partial HTTP requests. It maintains these connections by sending subsequent headers at extremely slow intervals. Because the server keeps the thread open waiting for the request to complete, the connection pool eventually fills up, denying service to legitimate traffic. 
+The script initiates a synchronous web server in the background and provides a 15-second grace period to establish a baseline. Once the grace period expires, the AsyncIO event loop launches a starvation attack. It opens hundreds of connections and maintains them with slow keep-alive headers. The server connection pool fills entirely, resulting in an absolute denial of service at the OS network layer.
 
-**Disclaimer:** Built strictly for educational use and defensive research in local environments. Do not deploy on unauthorized infrastructure.
+## Features
+* **True Concurrency:** Manages hundreds of simultaneous network locks without GIL bottlenecking.
+* **Live Telemetry:** Real-time terminal dashboard tracking active locks, dropped connections, and server latency.
+* **Self-Contained Architecture:** Houses both the vulnerable target and the attacker engine in a single execution flow for localized testing.
 
-## Execution
-Run a local web server (e.g., Flask on port 5000), then execute the simulator:
-```bash
-python asymmetric_dos.py
-```
-## Installation
+## Execution Guide
 1. Clone the repository:
    ```bash
-   git clone [https://github.com/this-is-the-invincible-meghnad/Asymmetric-DoS.git](https://github.com/this-is-the-invincible-meghnad/Asymmetric-DoS.git)
-   cd Asymmetric-DoS
+   git clone [https://github.com/this-is-the-invincible-meghnad/Async-DoS-Engine.git](https://github.com/this-is-the-invincible-meghnad/Async-DoS-Engine.git)
+   cd Async-DoS-Engine
    ```
+## Execution
+
+```bash
+python sandbox.py
+```
